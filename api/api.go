@@ -7,11 +7,13 @@ import (
 	"web-crawler/crawler"
 )
 
+type CrawlerRequest struct {
+	URL string `json:"url" validate:"required,ip"`
+}
+
 func CrawlerHandler(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-	}
+	fmt.Println("CrawlerHandler", r.Method, r.URL.Path, r.Body)
 
 	var request struct {
 		URL string `json:"url"`

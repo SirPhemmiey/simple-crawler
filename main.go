@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	http.HandleFunc("GET /crawl", api.CrawlerHandler)
+	http.HandleFunc("POST /crawl", api.CrawlerHandler)
 
 	log.Println("Starting server on 8080")
 
