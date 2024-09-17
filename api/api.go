@@ -8,20 +8,14 @@ import (
 )
 
 type CrawlerRequest struct {
-	URL string `json:"url" validate:"required,ip"`
+	URL string `json:"url" validate:"required,url"`
 }
 
 func CrawlerHandler(w http.ResponseWriter, r *http.Request) {
 
+	request := r.Context().Value("validatedRequest").(*CrawlerRequest)
+
 	fmt.Println("CrawlerHandler", r.Method, r.URL.Path, r.Body)
-
-	var request struct {
-		URL string `json:"url"`
-	}
-
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
-	}
 
 	content, err := crawler.Fetch(request.URL)
 	if err != nil {
