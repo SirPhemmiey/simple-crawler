@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-func Fetch(url string) (string, error) {
+func SingleFetch(url string) (string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", err
@@ -20,6 +20,19 @@ func Fetch(url string) (string, error) {
 	}
 
 	return string(body), nil
+}
+
+func MultipleFetch(urls []string) ([]string, error) {
+	var fetchedUrls []string
+
+	for _, u := range urls {
+		singleUrl, err := SingleFetch(u)
+		if err != nil {
+			return fetchedUrls, err
+		}
+		fetchedUrls = append(fetchedUrls, singleUrl)
+	}
+	return fetchedUrls, nil
 }
 
 // extract links from html content
@@ -44,5 +57,18 @@ func ExtractLinks(body string) ([]string, error) {
 		}
 	}
 	f(doc)
+	return links, nil
+}
+
+func MultipleExtractLinks(body []string) ([][]string, error) {
+	var links [][]string
+	for _, l := range body {
+		extractedLinks, err := ExtractLinks(l)
+		if err != nil {
+			return links, err
+		}
+		links = append(links, extractedLinks)
+	}
+
 	return links, nil
 }

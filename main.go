@@ -18,6 +18,7 @@ func main() {
 }
 
 func SetupRoute() {
-	http.HandleFunc("POST /crawl", middleware.ValidateRequest(api.CrawlerRequest{})(api.CrawlerHandler))
+	http.HandleFunc("POST /crawl-single", middleware.ValidateRequest(api.SingleCrawlerRequest{})(api.SingleCrawlerHandler))
+	http.HandleFunc("POST /crawl-multiple", middleware.ValidateRequest(api.MultipleCrawlerRequest{})(api.MultipleCrawlerHandler))
 
 }
