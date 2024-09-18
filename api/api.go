@@ -24,16 +24,18 @@ func SingleCrawlerHandler(w http.ResponseWriter, r *http.Request) {
 	content, err := crawler.SingleFetch(request.URL)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error fetching URL: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	links, err := crawler.ExtractLinks(content)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error extracting links: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	response := struct {
-		URL   string   `json:url`
-		Links []string `json:links`
+		URL   string   `json:"url"`
+		Links []string `json:"links"`
 	}{
 		URL:   request.URL,
 		Links: links,
@@ -52,21 +54,23 @@ func MultipleCrawlerHandler(w http.ResponseWriter, r *http.Request) {
 	content, err := crawler.MultipleFetch(request.URL)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error fetching URL: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	links, err := crawler.MultipleExtractLinks(content)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error extracting links: %v", err), http.StatusInternalServerError)
+		return
 	}
-	var mappedLinks = make(map[string][]string)
+	mappedLinks := make(map[string][]string)
 
-	for index, _ := range request.URL {
-		mappedLinks[request.URL[index]] = links[index]
+	for index, url := range request.URL {
+		mappedLinks[url] = links[index]
 	}
 
 	response := struct {
-		URL   []string            `json:urls`
-		Links map[string][]string `json:links`
+		URL   []string            `json:"urls"`
+		Links map[string][]string `json:"links"`
 	}{
 		URL:   request.URL,
 		Links: mappedLinks,
